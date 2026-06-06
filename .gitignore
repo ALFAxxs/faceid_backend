@@ -1,0 +1,59 @@
+# === Maxfiy fayllar (HECH QACHON commit qilinmasin) ===
+.env
+.env.production
+.env.local
+*.env
+
+# === Python / Django ===
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Ma'lumotlar bazasi (lokal)
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Django to'plangan static / media
+staticfiles/
+/media/
+
+# === Node / Frontend ===
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+npm-debug.log*
+yarn-debug.log*
+.vite/
+
+# === Lokal sinov uchun yuklangan Redis binarlari ===
+.redis/
+.redis8/
+
+# === IDE / OS ===
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# === Docker override (lokal) ===
+docker-compose.override.yml
+
+# === Loglar ===
+*.log
+
+# === Claude Code lokal sozlamalari ===
+.claude/settings.local.json
+
+# === TypeScript / Vite build artefaktlari ===
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts

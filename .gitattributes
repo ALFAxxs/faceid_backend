@@ -1,0 +1,21 @@
+# Standart: matn fayllar avtomatik aniqlansin
+* text=auto
+
+# Shell skriptlar HAR DOIM LF bilan (Docker/Linux'da ishlashi uchun)
+*.sh text eol=lf
+entrypoint.sh text eol=lf
+
+# Konfiguratsiya/manba fayllar LF
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+
+# Binar fayllar
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

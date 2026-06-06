@@ -1,0 +1,77 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Django ASGI (HTTP API + WebSocket)
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      RUN_MIGRATIONS: "1"
+      DB_HOST: db
+      DB_PORT: "5432"
+    volumes:
+      - media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    expose:
+      - "8000"
+
+  # ISUP TCP server (qurilma ulanishi uchun; ISAPI webhook ishlatsangiz ixtiyoriy)
+  isup:
+    build: .
+    restart: unless-stopped
+    command: python manage.py run_isup_server
+    env_file: .env.production
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "7332:7332"
+
+  # Frontend (nginx: SPA + reverse proxy)
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    volumes:
+      - media:/media:ro
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      # HTTPS uchun (TLS sertifikat sozlangach):
+      # - "443:443"
+
+volumes:
+  pgdata:
+  media:
